@@ -16,7 +16,7 @@ typedef enum {
     EVENT_CLIPBOARD_REQUEST,
     EVENT_CLIPBOARD_SEND,
     EVENT_CLIENT_EXIT,
-} eventType;
+} event_type;
 #endif
 typedef union {
     uint8_t type;

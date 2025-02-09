@@ -4,7 +4,7 @@
 #include "InputServer.h"
 #include "LogUtil.h"
 
-void inputCallback(InputEvent ev) {
+void inputCallback(termuxdc_event ev) {
 //    LOG_I("%d", ev.type);
 }
 void initClient() {
