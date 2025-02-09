@@ -1,7 +1,7 @@
 #pragma once
 
-#include "InputEvent.h"
-class InputEventCallback{
+#include "termuxdc_event.h"
+class termuxdc_event_callback{
 public:
     virtual void callback(termuxdc_event ev);
 };

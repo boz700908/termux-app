@@ -1,17 +1,17 @@
 
 #include "client.h"
 #include "server.h"
-#include "InputServer.h"
+#include "termuxdc_server.h"
 #include "LogUtil.h"
 
 void inputCallback(termuxdc_event ev) {
 //    LOG_I("%d", ev.type);
 }
 void initClient() {
-    DisplayClientInit(800, 600, 4);
-    InputInit(inputCallback);
+    display_client_init(800, 600, 4);
+    event_socket_init(inputCallback);
     pthread_t t;
-    pthread_create(&t, NULL, reinterpret_cast<void *(*)(void *)>(DisplayClientStart), nullptr);
+    pthread_create(&t, NULL, reinterpret_cast<void *(*)(void *)>(display_client_start), nullptr);
 }
 
 extern "C"

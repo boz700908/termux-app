@@ -3,31 +3,31 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
-#include "InputEvent.h"
+#include "termuxdc_event.h"
 #include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int DisplayClientInit(uint32_t width, uint32_t height, uint32_t channel);
+int display_client_init(uint32_t width, uint32_t height, uint32_t channel);
 
-int DisplayClientStart();
+int display_client_start();
 
-int DisplayDraw(const uint8_t *data);
+int display_draw(const uint8_t *data);
 
-int BeginDisplayDraw(const uint8_t *data);
+int begin_display_draw(const uint8_t *data);
 
-void DisplayDestroy();
+void display_destroy();
 
-int EndDisplayDraw();
+int end_display_draw();
 
-void InputInit(InputHandler handler);
+void event_socket_init(InputHandler handler);
 
-void InputDestroy();
+void event_socket_destroy();
 
-int GetInputSocket();
+int get_input_socket();
 
-int WaitEvent(termuxdc_event *event);
+int event_wait(termuxdc_event *event);
 
 #ifdef __cplusplus
 }

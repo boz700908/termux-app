@@ -1,5 +1,5 @@
-#include "InputServer.h"
-#include "InputEvent.h"
+#include "termuxdc_server.h"
+#include "termuxdc_event.h"
 #include "SocketIPCClient.h"
 
 #include <stdint.h>
@@ -12,7 +12,7 @@
 #define SOCKET_NAME     "shard_texture_socket"
 #endif
 
-void InputServer::Init() {
+void termuxdc_server::Init() {
     char socketName[108];
     struct sockaddr_un serverAddr;
 
@@ -41,49 +41,49 @@ void InputServer::Init() {
     pthread_create(&t, nullptr, work, this);
 }
 
-void InputServer::Destroy() {
+void termuxdc_server::Destroy() {
     reset();
 }
 
-void InputServer::reset() {
+void termuxdc_server::reset() {
     running = false;
     close(dataSocket);
 }
 
-int InputServer::GetDataSocket() {
+int termuxdc_server::GetDataSocket() {
     return dataSocket;
 }
 
-InputEventCallback *InputServer::GetCallback() {
+termuxdc_event_callback *termuxdc_server::GetCallback() {
     return inputEventCallback;
 }
 
-void InputServer::SetCallback(InputEventCallback *ca) {
+void termuxdc_server::SetCallback(termuxdc_event_callback *ca) {
     inputEventCallback = ca;
 }
 
-InputServer::~InputServer() {
+termuxdc_server::~termuxdc_server() {
     reset();
     delete inputEventCallback;
 }
 
-InputHandler InputServer::GetInputHandler() {
+InputHandler termuxdc_server::GetInputHandler() {
     return inputHandler;
 }
 
-void InputServer::SetInputHandler(InputHandler handler) {
+void termuxdc_server::SetInputHandler(InputHandler handler) {
     inputHandler = handler;
 }
 
-bool InputServer::isRunning() {
+bool termuxdc_server::isRunning() {
     return running;
 }
 
-void InputServer::setRunning(bool run) {
+void termuxdc_server::setRunning(bool run) {
     running = run;
 }
 
-int InputServer::waitEvent(termuxdc_event *event) {
+int termuxdc_server::waitEvent(termuxdc_event *event) {
     if (dataSocket > 0) {
         recv(dataSocket, event, sizeof(*event), MSG_WAITALL);
     } else {
@@ -93,7 +93,7 @@ int InputServer::waitEvent(termuxdc_event *event) {
 }
 
 void *work(void *args) {
-    auto *server = static_cast<InputServer *>(args);
+    auto *server = static_cast<termuxdc_server *>(args);
     server->setRunning(true);
     while (server->isRunning()) {
         termuxdc_event buf;

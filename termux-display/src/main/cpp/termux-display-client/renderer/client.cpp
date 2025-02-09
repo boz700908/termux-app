@@ -2,7 +2,7 @@
 #include <sys/epoll.h>
 #include "client.h"
 #include "SocketIPCClient.h"
-#include "InputServer.h"
+#include "termuxdc_server.h"
 
 #define MAX_EVENTS 10
 static bool isRunning = false;
@@ -16,11 +16,11 @@ static int epoll_fd = -1;
 
 #define SIGTERM_MSG "\nKILL | SIGTERM received.\n"
 #define SOCKET_NAME     "shard_texture_socket"
-static InputServer *inputServer;
+static termuxdc_server *inputServer;
 
 void SigTermHandler(int signum, siginfo_t *info, void *ptr) {
     write(STDERR_FILENO, SIGTERM_MSG, sizeof(SIGTERM_MSG));
-    DisplayDestroy();
+    display_destroy();
 }
 
 void CatchSigterm() {
@@ -71,7 +71,7 @@ void ClientSetup() {
     printf("%s\n", "Client ClientSetup complete.");
 }
 
-int DisplayClientInit(uint32_t width, uint32_t height, uint32_t channel) {
+int display_client_init(uint32_t width, uint32_t height, uint32_t channel) {
     printf("%s\n", "    CLIENT_APP_CMD_INIT");
     sleep(1);
     if (dataSocket < 0) {
@@ -103,9 +103,9 @@ int DisplayClientInit(uint32_t width, uint32_t height, uint32_t channel) {
     return ret;
 }
 
-int DisplayClientStart() {
+int display_client_start() {
     printf("%s\n", "----------------------------------------------------------------");
-    printf("%s\n", "    DisplayClientStart()");
+    printf("%s\n", "    display_client_start()");
     isRunning = true;
 
     timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK);
@@ -184,28 +184,28 @@ int DisplayClientStart() {
     return 0;
 }
 
-int DisplayDraw(const uint8_t *data) {
+int display_draw(const uint8_t *data) {
     if (clientRenderer) {
         return clientRenderer->Draw(data);
     }
     return -1;
 }
 
-int BeginDisplayDraw(const uint8_t *data) {
+int begin_display_draw(const uint8_t *data) {
     if (clientRenderer) {
         return clientRenderer->BeginDraw(data);
     }
     return -1;
 }
 
-int EndDisplayDraw() {
+int end_display_draw() {
     if (clientRenderer) {
         return clientRenderer->EndDraw();
     }
     return -1;
 }
 
-void DisplayDestroy() {
+void display_destroy() {
     termuxdc_event ev = {.type=EVENT_CLIENT_EXIT};
     send(inputServer->GetDataSocket(), &ev, sizeof(ev), MSG_DONTWAIT);
     isRunning = false;
@@ -217,26 +217,26 @@ void DisplayDestroy() {
     close(dataSocket);
 }
 
-void InputInit(InputHandler handler) {
-    inputServer = new InputServer;
+void event_socket_init(InputHandler handler) {
+    inputServer = new termuxdc_server;
     inputServer->Init();
     inputServer->SetInputHandler(handler);
 };
 
-void InputDestroy() {
+void event_socket_destroy() {
     if (inputServer) {
         inputServer->Destroy();
     }
 }
 
-int GetInputSocket() {
+int get_input_socket() {
     if (inputServer) {
         return inputServer->GetDataSocket();
     }
     return -1;
 }
 
-int WaitEvent(termuxdc_event *event) {
+int event_wait(termuxdc_event *event) {
     if (inputServer) {
         return inputServer->waitEvent(event);
     }

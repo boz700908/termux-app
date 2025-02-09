@@ -1,5 +1,5 @@
 #pragma once
-#include "InputEvent.h"
+#include "termuxdc_event.h"
 typedef void (*InputHandler)(termuxdc_event);
 
 /**

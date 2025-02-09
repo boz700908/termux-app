@@ -6,7 +6,7 @@ add_library(termux-display-client
         SHARED
         renderer/client.cpp
         renderer/SocketIPCClient.cpp
-        renderer/InputServer.cpp
+        renderer/termuxdc_server.cpp
 )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
