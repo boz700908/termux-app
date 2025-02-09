@@ -18,23 +18,23 @@ static int epoll_fd = -1;
 #define SOCKET_NAME     "shard_texture_socket"
 static termuxdc_server *inputServer;
 
-void SigTermHandler(int signum, siginfo_t *info, void *ptr) {
+void sig_term_handler(int signum, siginfo_t *info, void *ptr) {
     write(STDERR_FILENO, SIGTERM_MSG, sizeof(SIGTERM_MSG));
     display_destroy();
 }
 
-void CatchSigterm() {
+void catch_sig_term() {
     static struct sigaction sigact;
 
     memset(&sigact, 0, sizeof(sigact));
-    sigact.sa_sigaction = SigTermHandler;
+    sigact.sa_sigaction = sig_term_handler;
     sigact.sa_flags = SA_SIGINFO;
 
 //    sigaction(SIGTERM, &sigact, NULL);
     sigaction(SIGINT, &sigact, NULL);
 }
 
-void ClientSetup() {
+void client_setup() {
     char socketName[108];
     struct sockaddr_un serverAddr;
 
@@ -67,15 +67,15 @@ void ClientSetup() {
             break;
         }
     }
-    CatchSigterm();
-    printf("%s\n", "Client ClientSetup complete.");
+    catch_sig_term();
+    printf("%s\n", "Client client_setup complete.");
 }
 
 int display_client_init(uint32_t width, uint32_t height, uint32_t channel) {
     printf("%s\n", "    CLIENT_APP_CMD_INIT");
     sleep(1);
     if (dataSocket < 0) {
-        ClientSetup();
+        client_setup();
         AHardwareBuffer_Desc hwDesc;
         hwDesc.format = AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM;
         hwDesc.width = width;
@@ -184,16 +184,16 @@ int display_client_start() {
     return 0;
 }
 
-int display_draw(const uint8_t *data) {
+int display_draw(void **data) {
     if (clientRenderer) {
-        return clientRenderer->Draw(data);
+        return clientRenderer->Draw(reinterpret_cast<const uint8_t *>(data));
     }
     return -1;
 }
 
-int begin_display_draw(const uint8_t *data) {
+int begin_display_draw(void **data) {
     if (clientRenderer) {
-        return clientRenderer->BeginDraw(data);
+        return clientRenderer->BeginDraw(reinterpret_cast<const uint8_t *>(data));
     }
     return -1;
 }

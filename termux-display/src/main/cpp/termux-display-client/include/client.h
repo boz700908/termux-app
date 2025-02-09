@@ -13,9 +13,9 @@ int display_client_init(uint32_t width, uint32_t height, uint32_t channel);
 
 int display_client_start();
 
-int display_draw(const uint8_t *data);
+int display_draw(void **data);
 
-int begin_display_draw(const uint8_t *data);
+int begin_display_draw(void **data);
 
 void display_destroy();
 
