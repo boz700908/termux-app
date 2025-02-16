@@ -1,4 +1,6 @@
 #pragma once
+
+#include <android/hardware_buffer.h>
 #include "termuxdc_event.h"
 typedef void (*InputHandler)(termuxdc_event);
 
@@ -40,3 +42,17 @@ typedef struct native_handle {
 #pragma clang diagnostic pop
 #endif
 } native_handle_t;
+struct termuxdc_buffer {
+    uint32_t format;
+    AHardwareBuffer_Desc desc;
+    AHardwareBuffer* buffer;
+    void *dlhandle;
+    int (*lock)(AHardwareBuffer *buffer,
+                uint64_t usage,
+                int32_t fence,
+                const ARect *rect,
+                void **outVirtualAddress);
+    int (*unlock)(AHardwareBuffer *buffer, int32_t *fence);
+    void (*describe)(const AHardwareBuffer *buffer, AHardwareBuffer_Desc *outDesc);
+    const native_handle_t *(*getNativeHandle)(const AHardwareBuffer *buffer);
+};
