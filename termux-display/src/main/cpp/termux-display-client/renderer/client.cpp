@@ -18,7 +18,7 @@ static int epoll_fd = -1;
 #define SIGTERM_MSG "\nKILL | SIGTERM received.\n"
 #define SOCKET_NAME     "shard_texture_socket"
 static termuxdc_server *inputServer;
-static termuxdc_buffer termuxBuffer;
+static termuxdc_buffer *termuxBuffer;
 
 bool termuxdc_buffer_ahb_func_load(struct termuxdc_buffer *buffer) {
     buffer->dlhandle = dlopen("libandroid.so", RTLD_NOW);
@@ -65,6 +65,8 @@ bool termuxdc_buffer_ahb_fun_unload(struct termuxdc_buffer *buffer) {
 void sig_term_handler(int signum, siginfo_t *info, void *ptr) {
     write(STDERR_FILENO, SIGTERM_MSG, sizeof(SIGTERM_MSG));
     display_destroy();
+    termuxdc_buffer_ahb_fun_unload(termuxBuffer);
+    delete termuxBuffer;
 }
 
 void catch_sig_term() {
@@ -112,7 +114,8 @@ void client_setup() {
         }
     }
     catch_sig_term();
-    termuxdc_buffer_ahb_func_load(&termuxBuffer);
+    termuxBuffer = new termuxdc_buffer;
+    termuxdc_buffer_ahb_func_load(termuxBuffer);
     printf("%s\n", "Client client_setup complete.");
 }
 
@@ -260,7 +263,6 @@ void display_destroy() {
     clientRenderer->Destroy();
     AHardwareBuffer_release(hwBuffer);
     close(dataSocket);
-    termuxdc_buffer_ahb_fun_unload(&termuxBuffer);
 }
 
 void event_socket_init(InputHandler handler) {
@@ -289,8 +291,10 @@ int event_wait(termuxdc_event *event) {
     return -1;
 }
 
-native_handle_t *get_native_handler() {
-
+const native_handle_t *get_native_handler() {
+    if (termuxBuffer){
+        return termuxBuffer->getNativeHandle(hwBuffer);
+    }
 }
 
 

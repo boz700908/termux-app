@@ -29,7 +29,7 @@ int get_input_socket();
 
 int event_wait(termuxdc_event *event);
 
-native_handle_t *get_native_handler();
+const native_handle_t *get_native_handler();
 
 #ifdef __cplusplus
 }
