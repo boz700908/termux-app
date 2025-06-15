@@ -555,7 +555,8 @@ public class MainActivity extends LoriePreferences {
                 tryConnect();
 
                 if (intent != getIntent()) {
-                    getIntent().putExtra(null, bundle);
+//                    getIntent().putExtra(null, bundle);
+                    setIntent(intent);
                 }
             }
         } catch (Exception e) {
@@ -978,16 +979,15 @@ public class MainActivity extends LoriePreferences {
         Log.d("MainActivity", "Toggling keyboard visibility");
         if (inputMethodManager != null) {
             android.util.Log.d("toggleKeyboardVisibility", "externalKeyboardConnected " + externalKeyboardConnected + " showIMEWhileExternalConnected " + showIMEWhileExternalConnected);
+            if (isConnected()) {
+                getInstance().getLorieView().requestFocus();
+            }
             if (!externalKeyboardConnected || showIMEWhileExternalConnected) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 softKeyboardShown = true;
             } else {
                 inputMethodManager.hideSoftInputFromWindow(getInstance().getWindow().getDecorView().getRootView().getWindowToken(), 0);
                 softKeyboardShown = false;
-            }
-
-            if (isConnected()) {
-                getInstance().getLorieView().requestFocus();
             }
         }
     }
@@ -1006,7 +1006,7 @@ public class MainActivity extends LoriePreferences {
                 tryConnect();
             else {
                 getLorieView().setPointerIcon(PointerIcon.getSystemIcon(this, PointerIcon.TYPE_NULL));
-                releaseSlider(false);
+                openPreference(false);
             }
 
             onWindowFocusChanged(hasWindowFocus());
