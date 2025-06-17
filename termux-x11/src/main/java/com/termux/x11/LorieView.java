@@ -783,9 +783,6 @@ public class LorieView extends SurfaceView implements InputStub {
             if (action == KeyEvent.ACTION_UP)
                 keyReleaseHandler.sendEmptyMessageDelayed(event.getKeyCode(), 50);
         }
-        if(event.getKeyCode()==KeyEvent.KEYCODE_ENTER && KeyEvent.ACTION_UP==event.getAction()){
-            keyReleaseHandler.sendEmptyMessageDelayed(event.getKeyCode(), 5);
-        }
 
         if (hardwareKbdScancodesWorkaround)
             return false;
@@ -800,9 +797,6 @@ public class LorieView extends SurfaceView implements InputStub {
             int action = event.getAction();
             if (action == KeyEvent.ACTION_UP)
                 keyReleaseHandler.removeMessages(event.getKeyCode());
-        }
-        if(event.getKeyCode()==KeyEvent.KEYCODE_ENTER && KeyEvent.ACTION_UP==event.getAction()){
-            keyReleaseHandler.sendEmptyMessageDelayed(event.getKeyCode(), 5);
         }
 
         return super.dispatchKeyEvent(event);
