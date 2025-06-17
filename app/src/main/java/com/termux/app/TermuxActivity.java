@@ -1,6 +1,7 @@
 package com.termux.app;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+import static android.view.KeyEvent.ACTION_UP;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_FILES_DIR_PATH;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_HOME_DIR_PATH;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_TMP_PREFIX_DIR_PATH;
@@ -942,6 +943,11 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
 //            finishActivityIfNotFinishing();
             if (!mEnableFloatBallMenu || mFloatBallMenuClient == null) {
                 mMainContentView.releaseSlider(true);
+                if (!getX11Focus()) {
+                    if (!back2PreviousMenu()) {
+                        termuxActivityListener.onX11PreferenceSwitchChange(false);
+                    }
+                }
             }
         }
     }
