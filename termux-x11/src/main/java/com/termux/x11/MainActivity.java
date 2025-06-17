@@ -3,7 +3,6 @@ package com.termux.x11;
 import static android.Manifest.permission.WRITE_SECURE_SETTINGS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
-import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_META_LEFT;
@@ -21,7 +20,6 @@ import static com.termux.x11.CmdEntryPoint.ACTION_START;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -204,8 +202,7 @@ public class MainActivity extends LoriePreferences {
             if (k == KEYCODE_BACK) {
                 if (softKeyboardShown) {
                     if(e.getAction()==ACTION_UP) {
-                        inputMethodManager.hideSoftInputFromWindow(getInstance().getWindow().getDecorView().getRootView().getWindowToken(), 0);
-                        softKeyboardShown = false;
+                        closeSoftKeyboard();
                     }
                     return true;
                 }
@@ -232,11 +229,6 @@ public class MainActivity extends LoriePreferences {
             return result;
         };
         lorieParent.setOnTouchListener((v, event) -> true);
-//        lorieParent.setOnTouchListener((v, e) -> mInputHandler.handleTouchEvent(lorieParent, lorieView, e));
-//        lorieParent.setOnHoverListener((v, e) -> mInputHandler.handleTouchEvent(lorieParent, lorieView, e));
-//        lorieParent.setOnGenericMotionListener((v, e) -> mInputHandler.handleTouchEvent(lorieParent, lorieView, e));
-//        lorieView.setOnCapturedPointerListener((v, e) -> mInputHandler.handleTouchEvent(lorieView, lorieView, e));
-//        lorieParent.setOnCapturedPointerListener((v, e) -> mInputHandler.handleTouchEvent(lorieView, lorieView, e));
         lorieView.setOnHoverListener((v, e) -> mInputHandler.handleTouchEvent(lorieParent, lorieView, e));
         lorieView.setOnKeyListener(mLorieKeyListener);
 
@@ -280,18 +272,6 @@ public class MainActivity extends LoriePreferences {
         initStylusAuxButtons();
         initMouseAuxButtons();
         setupInputController();
-//        inputControlsView.setOnHoverListener((v, e) -> {
-//            int[] view0Location = new int[2];
-//            int[] viewLocation = new int[2];
-//
-//            lorieParent.getLocationOnScreen(view0Location);
-//            lorieView.getLocationOnScreen(viewLocation);
-//
-//            int offsetX = viewLocation[0] - view0Location[0];
-//            int offsetY = viewLocation[1] - view0Location[1];
-//            xServer.pointer.moveTo((int) (e.getRawX()-offsetX), (int) (e.getRawY()-offsetY));
-//            return false;
-//        });
 
         if (SDK_INT >= VERSION_CODES.TIRAMISU
             && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED
@@ -303,6 +283,15 @@ public class MainActivity extends LoriePreferences {
         Executors.newSingleThreadExecutor().execute(() -> {
             winHandler.start();
         });
+    }
+
+    private static void closeSoftKeyboard() {
+        inputMethodManager.hideSoftInputFromWindow(getInstance().getWindow().getDecorView().getRootView().getWindowToken(), 0);
+        softKeyboardShown = false;
+    }
+    private static void openSoftKeyboard() {
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        softKeyboardShown = true;
     }
 
     @Override
@@ -753,9 +742,9 @@ public class MainActivity extends LoriePreferences {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-//        if (newConfig.orientation != orientation) {
-//            switchSoftKeyboard(true);
-//        }
+        if (newConfig.orientation != orientation) {
+            closeSoftKeyboard();
+        }
 
         orientation = newConfig.orientation;
         if (termuxActivityListener != null) {
@@ -788,73 +777,6 @@ public class MainActivity extends LoriePreferences {
         }
     }
 
-//    @SuppressLint("WrongConstant")
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//
-//        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
-//        Window window = getWindow();
-//        View decorView = window.getDecorView();
-//        boolean fullscreen = p.getBoolean("fullscreen", false);
-//        boolean reseed = p.getBoolean("Reseed", true);
-//
-//        Intent intent = getIntent();
-//        fullscreen = fullscreen || (null != intent && intent.getBooleanExtra(REQUEST_LAUNCH_EXTERNAL_DISPLAY, false));
-//
-//        int requestedOrientation = p.getBoolean("forceLandscape", false) ?
-//            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-//        if (getRequestedOrientation() != requestedOrientation)
-//            setRequestedOrientation(requestedOrientation);
-////        if (getOrientation() != requestedOrientation)
-////            setRequestedOrientation(requestedOrientation);
-//        if (hasFocus) {
-//            if (SDK_INT >= VERSION_CODES.P) {
-//                if (p.getBoolean("hideCutout", false)) {
-//                    getWindow().getAttributes().layoutInDisplayCutoutMode = (SDK_INT >= VERSION_CODES.R) ?
-//                        LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS :
-//                        LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-//                } else {
-//                    getWindow().getAttributes().layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
-//                }
-//            }
-//
-//            window.setStatusBarColor(Color.BLACK);
-//            window.setNavigationBarColor(Color.BLACK);
-//        }
-//
-//        window.setFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS | FLAG_KEEP_SCREEN_ON | FLAG_TRANSLUCENT_STATUS, 0);
-//        if (hasFocus) {
-//            if (fullscreen) {
-//                window.addFlags(FLAG_FULLSCREEN);
-//                decorView.setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//            } else {
-//                window.clearFlags(FLAG_FULLSCREEN);
-//                decorView.setSystemUiVisibility(0);
-//            }
-//        }
-//
-//        if (p.getBoolean("keepScreenOn", true))
-//            window.addFlags(FLAG_KEEP_SCREEN_ON);
-//        else
-//            window.clearFlags(FLAG_KEEP_SCREEN_ON);
-//        window.setSoftInputMode((reseed ? SOFT_INPUT_ADJUST_RESIZE : SOFT_INPUT_ADJUST_PAN) | SOFT_INPUT_STATE_HIDDEN);
-//        ((FrameLayout) findViewById(R.id.id_display_window)).getChildAt(0).setFitsSystemWindows(!fullscreen);
-//        SamsungDexUtils.dexMetaKeyCapture(this, hasFocus && p.getBoolean("dexMetaKeyCapture", false));
-//
-//        if (hasFocus) {
-//            getLorieView().regenerate();
-//            getLorieView().requestLayout();
-//        }
-//        getLorieView().requestFocus();
-//    }
-
     @SuppressLint("WrongConstant")
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -866,15 +788,6 @@ public class MainActivity extends LoriePreferences {
         boolean fullscreen = prefs.fullscreen.get();
         boolean hideCutout = prefs.hideCutout.get();
         boolean reseed = prefs.Reseed.get();
-
-//        if (oldHideCutout != hideCutout || oldFullscreen != fullscreen) {
-//            oldHideCutout = hideCutout;
-//            oldFullscreen = fullscreen;
-//            // For some reason cutout or fullscreen change makes layout calculations wrong and invalid.
-//            // I did not find simple and reliable way to fix it so it is better to start from the beginning.
-//            recreate();
-//            return;
-//        }
 
         int requestedOrientation;
         switch (prefs.forceOrientation.get()) {
@@ -987,11 +900,9 @@ public class MainActivity extends LoriePreferences {
                 getInstance().getLorieView().requestFocus();
             }
             if (!externalKeyboardConnected || showIMEWhileExternalConnected) {
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                softKeyboardShown = true;
+                openSoftKeyboard();
             } else {
-                inputMethodManager.hideSoftInputFromWindow(getInstance().getWindow().getDecorView().getRootView().getWindowToken(), 0);
-                softKeyboardShown = false;
+                closeSoftKeyboard();
             }
         }
     }
