@@ -695,33 +695,42 @@ public class MainActivity extends LoriePreferences {
         getLorieView().requestFocus();
     }
 
-    public void toggleExtraKeys(boolean visible, boolean saveState) {
-        runOnUiThread(() -> {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            boolean enabled = preferences.getBoolean("showAdditionalKbd", true);
-            ViewPager pager = getDisplayTerminalToolbarViewPager();
-            ViewGroup parent = (ViewGroup) pager.getParent();
-            boolean show = enabled && mClientConnected && visible;
+//    public void toggleExtraKeys(boolean visible, boolean saveState) {
+//        runOnUiThread(() -> {
+//            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//            boolean enabled = preferences.getBoolean("showAdditionalKbd", true);
+//            ViewPager pager = getDisplayTerminalToolbarViewPager();
+//            ViewGroup parent = (ViewGroup) pager.getParent();
+//            boolean show = enabled && mClientConnected && visible;
+//
+//            if (show) {
+//                setTerminalToolbarView();
+//                getDisplayTerminalToolbarViewPager().bringToFront();
+//            } else {
+//                parent.removeView(pager);
+//                parent.addView(pager, 0);
+//            }
+//
+//            if (enabled && saveState) {
+//                SharedPreferences.Editor edit = preferences.edit();
+//                edit.putBoolean("additionalKbdVisible", show);
+//                edit.commit();
+//            }
+//
+//            pager.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+//
+//            getLorieView().requestFocus();
+//        });
+//    }
+public void toggleExtraKeys(boolean visible, boolean saveState) {
+    boolean enabled = prefs.showAdditionalKbd.get();
 
-            if (show) {
-                setTerminalToolbarView();
-                getDisplayTerminalToolbarViewPager().bringToFront();
-            } else {
-                parent.removeView(pager);
-                parent.addView(pager, 0);
-            }
+    if (enabled && LorieView.connected() && saveState)
+        prefs.additionalKbdVisible.put(visible);
 
-            if (enabled && saveState) {
-                SharedPreferences.Editor edit = preferences.edit();
-                edit.putBoolean("additionalKbdVisible", show);
-                edit.commit();
-            }
-
-            pager.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-
-            getLorieView().requestFocus();
-        });
-    }
+    setTerminalToolbarView();
+    getWindow().setSoftInputMode(prefs.Reseed.get() ? SOFT_INPUT_ADJUST_RESIZE : SOFT_INPUT_ADJUST_PAN);
+}
 
     public void toggleExtraKeys() {
         int visibility = getDisplayTerminalToolbarViewPager().getVisibility();
