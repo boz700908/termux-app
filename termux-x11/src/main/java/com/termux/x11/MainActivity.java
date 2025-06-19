@@ -201,18 +201,18 @@ public class MainActivity extends LoriePreferences {
 
             if (k == KEYCODE_BACK) {
                 if (softKeyboardShown) {
-                    if(e.getAction()==ACTION_UP) {
+                    if (e.getAction() == ACTION_UP) {
                         closeSoftKeyboard();
                     }
                     return true;
                 }
                 if (null != termuxActivityListener && !mEnableFloatBallMenu) {
-                    if(e.getAction()==ACTION_UP) {
+                    if (e.getAction() == ACTION_UP) {
                         releaseSlider(true);
                     }
                 }
                 if (!getX11Focus()) {
-                    if(e.getAction()==ACTION_UP) {
+                    if (e.getAction() == ACTION_UP) {
                         if (!back2PreviousMenu()) {
                             termuxActivityListener.onX11PreferenceSwitchChange(false);
                         }
@@ -289,6 +289,7 @@ public class MainActivity extends LoriePreferences {
         inputMethodManager.hideSoftInputFromWindow(getInstance().getWindow().getDecorView().getRootView().getWindowToken(), 0);
         softKeyboardShown = false;
     }
+
     private static void openSoftKeyboard() {
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         softKeyboardShown = true;
@@ -696,31 +697,13 @@ public class MainActivity extends LoriePreferences {
     }
 
     public void toggleExtraKeys(boolean visible, boolean saveState) {
-        runOnUiThread(() -> {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            boolean enabled = preferences.getBoolean("showAdditionalKbd", true);
-            ViewPager pager = getDisplayTerminalToolbarViewPager();
-            ViewGroup parent = (ViewGroup) pager.getParent();
-            boolean show = enabled && mClientConnected && visible;
+        boolean enabled = prefs.showAdditionalKbd.get();
 
-            if (show) {
-                setTerminalToolbarView();
-                getDisplayTerminalToolbarViewPager().bringToFront();
-            } else {
-                parent.removeView(pager);
-                parent.addView(pager, 0);
-            }
+        if (enabled && LorieView.connected() && saveState)
+            prefs.additionalKbdVisible.put(visible);
 
-            if (enabled && saveState) {
-                SharedPreferences.Editor edit = preferences.edit();
-                edit.putBoolean("additionalKbdVisible", show);
-                edit.commit();
-            }
-
-            pager.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-
-            getLorieView().requestFocus();
-        });
+        setTerminalToolbarView();
+        getWindow().setSoftInputMode(prefs.Reseed.get() ? SOFT_INPUT_ADJUST_RESIZE : SOFT_INPUT_ADJUST_PAN);
     }
 
     public void toggleExtraKeys() {
