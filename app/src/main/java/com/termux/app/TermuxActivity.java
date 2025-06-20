@@ -265,7 +265,7 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
             int offsetY = viewLocation[1] - view0Location[1];
 
             getLorieView().screenInfo.offsetX = offsetX;
-            getLorieView().screenInfo.offsetY = offsetY;
+            getLorieView().screenInfo.offsetY = offsetY+ScreenUtils.getStatusHeight();
             inputControlsView.handleTouchEvent(ev);
             return true;
         }

@@ -900,11 +900,14 @@ public class MainActivity extends LoriePreferences {
             getLorieView().setVisibility(connected ? View.VISIBLE : View.INVISIBLE);
 
             // We should recover connection in the case if file descriptor for some reason was broken...
-            if (!connected)
+            if (!connected) {
+                MainActivity.mLorieViewConnected = false;
                 tryConnect();
+            }
             else {
                 getLorieView().setPointerIcon(PointerIcon.getSystemIcon(this, PointerIcon.TYPE_NULL));
                 openPreference(false);
+                MainActivity.mLorieViewConnected =true;
             }
 
             onWindowFocusChanged(hasWindowFocus());

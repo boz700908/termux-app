@@ -111,6 +111,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
     protected ControlsProfile profile;
     protected String controlsProfile;
     protected Container container;
+    public static boolean mLorieViewConnected = false;
 
     public List<ProcessInfo> getTermuxProcessorInfo(String tag) {
         if (termuxActivityListener != null) {
@@ -278,6 +279,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
 
     public void stopDesktop() {
         if (termuxActivityListener != null) {
+            mLorieViewConnected=false;
             termuxActivityListener.stopDesktop(this);
         }
     }
