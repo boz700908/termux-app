@@ -279,7 +279,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
 
     public void stopDesktop() {
         if (termuxActivityListener != null) {
-            mLorieViewConnected=false;
+            mLorieViewConnected = false;
             termuxActivityListener.stopDesktop(this);
         }
     }
@@ -538,9 +538,11 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
                 }
             }
             if (p.getKey().contentEquals("open_keyboard")) {
-                loriePreferences.openPreference(false);
                 handler.postDelayed(() -> {
-                    loriePreferences.termuxActivityListener.openSoftwareKeyboard();
+                    if (loriePreferences != null) {
+                        loriePreferences.openPreference(false);
+                        loriePreferences.termuxActivityListener.openSoftwareKeyboard();
+                    }
                 }, 500);
             }
             if (p.getKey().contentEquals("select_controller")) {
@@ -575,8 +577,8 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
                     .setPositiveButton("OK",
                         (dialog, whichButton) -> {
                             if (loriePreferences != null) {
-                                loriePreferences.openPreference(false);
                                 handler.postDelayed(() -> {
+                                    loriePreferences.openPreference(false);
                                     loriePreferences.stopDesktop();
                                 }, 500);
                             }
