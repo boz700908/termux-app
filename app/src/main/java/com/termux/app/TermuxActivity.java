@@ -424,7 +424,15 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
 
             @Override
             public void stopDesktop(Activity activity) {
-                CommandUtils.exec(activity, "stopserver", null);
+                    final AlertDialog.Builder b = new AlertDialog.Builder(TermuxActivity.this);
+                    b.setIcon(android.R.drawable.ic_dialog_alert);
+                    b.setMessage(R.string.stopDesktopTitle);
+                    b.setPositiveButton(android.R.string.yes, (dialog, id) -> {
+                        dialog.dismiss();
+                        CommandUtils.exec(activity, "stopserver", null);
+                    });
+                    b.setNegativeButton(android.R.string.no, null);
+                    b.show();
             }
 
             @Override
