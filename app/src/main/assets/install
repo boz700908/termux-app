@@ -1,7 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/sh
 pkg remove termux-display-nightly -y
 pkg remove termux-x11-nightly -y
-pkg -i x11-repo
-dpkg -i /data/data/com.termux/files/home/xkeyboard-config_2.45_all.deb
+if [[ -z $(dpkg -l | grep xkeyboard-config) ]]; then
+    dpkg -i /data/data/com.termux/files/home/xkeyboard-config_2.45_all.deb
+fi
 dpkg -i /data/data/com.termux/files/home/termux-x11-nightly-1.03.10-0-all.deb
+chmod +x startxserver
+chmod +x stopserver
 chmod +x $PREFIX/bin/termux-x11*
