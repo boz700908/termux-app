@@ -7,6 +7,7 @@ import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_META_LEFT;
 import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+import static android.view.View.VISIBLE;
 import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
 import static android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN;
 import static android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
@@ -343,7 +344,7 @@ public class MainActivity extends LoriePreferences {
         overlay.setOnHoverListener((v, e) -> true);
         overlay.setOnGenericMotionListener((v, e) -> true);
         overlay.setOnCapturedPointerListener((v, e) -> true);
-        overlay.setVisibility(stylusMenuEnabled ? View.VISIBLE : View.GONE);
+        overlay.setVisibility(stylusMenuEnabled ? VISIBLE : View.GONE);
         View.OnClickListener listener = view -> {
             TouchInputHandler.STYLUS_INPUT_HELPER_MODE = (view.equals(left) ? 1 : (view.equals(middle) ? 2 : (view.equals(right) ? 3 : 0)));
             left.setAlpha((TouchInputHandler.STYLUS_INPUT_HELPER_MODE == 1) ? menuSelectedTrasparency : menuUnselectedTrasparency);
@@ -357,13 +358,13 @@ public class MainActivity extends LoriePreferences {
         right.setOnClickListener(listener);
 
         visibility.setOnClickListener(view -> {
-            if (buttons.getVisibility() == View.VISIBLE) {
+            if (buttons.getVisibility() == VISIBLE) {
                 buttons.setVisibility(View.GONE);
                 visibility.setAlpha(menuUnselectedTrasparency);
                 int m = TouchInputHandler.STYLUS_INPUT_HELPER_MODE;
                 visibility.setText(m == 1 ? "L" : (m == 2 ? "M" : (m == 3 ? "R" : "U")));
             } else {
-                buttons.setVisibility(View.VISIBLE);
+                buttons.setVisibility(VISIBLE);
                 visibility.setAlpha(menuUnselectedTrasparency);
                 visibility.setText("X");
 
@@ -437,7 +438,7 @@ public class MainActivity extends LoriePreferences {
 
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
         boolean mouseHelperEnabled = p.getBoolean("showMouseHelper", false) && "1".equals(p.getString("touchMode", "1"));
-        primaryLayer.setVisibility(mouseHelperEnabled ? View.VISIBLE : View.GONE);
+        primaryLayer.setVisibility(mouseHelperEnabled ? VISIBLE : View.GONE);
 
         pos.setOnClickListener((v) -> {
             if (secondaryLayer.getOrientation() == LinearLayout.HORIZONTAL) {
@@ -636,7 +637,7 @@ public class MainActivity extends LoriePreferences {
         useTermuxEKBarBehaviour = prefs.useTermuxEKBarBehaviour.get();
         showIMEWhileExternalConnected = prefs.showIMEWhileExternalConnected.get();
 
-        findViewById(R.id.mouse_buttons).setVisibility(prefs.showMouseHelper.get() && "1".equals(prefs.touchMode.get()) && LorieView.connected() ? View.VISIBLE : View.GONE);
+        findViewById(R.id.mouse_buttons).setVisibility(prefs.showMouseHelper.get() && "1".equals(prefs.touchMode.get()) && LorieView.connected() ? VISIBLE : View.GONE);
         showMouseAuxButtons(prefs.showMouseHelper.get());
         showStylusAuxButtons(prefs.showStylusClickOverride.get());
 
@@ -673,7 +674,7 @@ public class MainActivity extends LoriePreferences {
 
         boolean showNow = LorieView.connected() && prefs.showAdditionalKbd.get() && prefs.additionalKbdVisible.get();
 
-        pager.setVisibility(showNow ? View.VISIBLE : View.INVISIBLE);
+        pager.setVisibility(showNow ? VISIBLE : View.INVISIBLE);
 
         if (showNow) {
             pager.setAdapter(new X11ToolbarViewPager.PageAdapter(this, (v, k, e) -> mInputHandler.sendKeyEvent(e)));
@@ -708,7 +709,7 @@ public class MainActivity extends LoriePreferences {
 
     public void toggleExtraKeys() {
         int visibility = getDisplayTerminalToolbarViewPager().getVisibility();
-        toggleExtraKeys(visibility != View.VISIBLE, true);
+        toggleExtraKeys(visibility != VISIBLE, true);
         getLorieView().requestFocus();
     }
 
@@ -895,9 +896,9 @@ public class MainActivity extends LoriePreferences {
         runOnUiThread(() -> {
             boolean connected = LorieView.connected();
             setTerminalToolbarView();
-            findViewById(R.id.mouse_buttons).setVisibility(prefs.showMouseHelper.get() && "1".equals(prefs.touchMode.get()) && connected ? View.VISIBLE : View.GONE);
-            findViewById(R.id.stub).setVisibility(connected ? View.INVISIBLE : View.VISIBLE);
-            getLorieView().setVisibility(connected ? View.VISIBLE : View.INVISIBLE);
+            findViewById(R.id.mouse_buttons).setVisibility(prefs.showMouseHelper.get() && "1".equals(prefs.touchMode.get()) && connected ? VISIBLE : View.GONE);
+            findViewById(R.id.stub).setVisibility(connected ? View.INVISIBLE : VISIBLE);
+            getLorieView().setVisibility(connected ? VISIBLE : View.INVISIBLE);
 
             // We should recover connection in the case if file descriptor for some reason was broken...
             if (!connected) {
@@ -956,7 +957,7 @@ public class MainActivity extends LoriePreferences {
     private void showStylusAuxButtons(boolean show) {
         LinearLayout buttons = findViewById(R.id.mouse_helper_visibility);
         if (LorieView.connected() && show) {
-            buttons.setVisibility(View.VISIBLE);
+            buttons.setVisibility(VISIBLE);
             buttons.setAlpha(isInPictureInPictureMode ? 0.f : 1.f);
         } else {
             //Reset default input back to normal
@@ -975,7 +976,7 @@ public class MainActivity extends LoriePreferences {
         final ViewPager pager = getDisplayTerminalToolbarViewPager();
         View mouseAuxButtons = findViewById(R.id.mouse_buttons);
         View stylusAuxButtons = findViewById(R.id.mouse_helper_visibility);
-        int maxYDecrement = (pager.getVisibility() == View.VISIBLE) ? pager.getHeight() : 0;
+        int maxYDecrement = (pager.getVisibility() == VISIBLE) ? pager.getHeight() : 0;
 
         mouseAuxButtons.setX(MathUtils.clamp(mouseAuxButtons.getX(), frm.getX(), frm.getX() + frm.getWidth() - mouseAuxButtons.getWidth()));
         mouseAuxButtons.setY(MathUtils.clamp(mouseAuxButtons.getY(), frm.getY(), frm.getY() + frm.getHeight() - mouseAuxButtons.getHeight() - maxYDecrement));
@@ -985,22 +986,46 @@ public class MainActivity extends LoriePreferences {
     }
 
     public void toggleStylusAuxButtons() {
-        showStylusAuxButtons(findViewById(R.id.mouse_helper_visibility).getVisibility() != View.VISIBLE);
+        showStylusAuxButtons(findViewById(R.id.mouse_helper_visibility).getVisibility() != VISIBLE);
         makeSureHelpersAreVisibleAndInScreenBounds();
     }
 
     private void showMouseAuxButtons(boolean show) {
         View v = findViewById(R.id.mouse_buttons);
-        v.setVisibility((LorieView.connected() && show && "1".equals(prefs.touchMode.get())) ? View.VISIBLE : View.GONE);
+        v.setVisibility((LorieView.connected() && show && "1".equals(prefs.touchMode.get())) ? VISIBLE : View.GONE);
         v.setAlpha(isInPictureInPictureMode ? 0.f : 0.7f);
         makeSureHelpersAreVisibleAndInScreenBounds();
     }
 
     public void toggleMouseAuxButtons() {
-        showMouseAuxButtons(findViewById(R.id.mouse_buttons).getVisibility() != View.VISIBLE);
+        showMouseAuxButtons(findViewById(R.id.mouse_buttons).getVisibility() != VISIBLE);
     }
 
     public void showProcessManagerDialog() {
         (new TaskManagerDialog(this)).show();
+    }
+    //whether view include (x,y)
+    private boolean isTouchPointInView(View view, int x, int y) {
+        if (view == null) {
+            return false;
+        }
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int left = location[0];
+        int top = location[1];
+        int right = left + view.getMeasuredWidth();
+        int bottom = top + view.getMeasuredHeight();
+        //view.isClickable() &&
+        if (y >= top && y <= bottom && x >= left
+            && x <= right) {
+            return true;
+        }
+        return false;
+    }
+    protected boolean extraKeyboardHandleTouchEvent(MotionEvent event){
+        if(getDisplayTerminalToolbarViewPager().getVisibility()!=VISIBLE){
+            return false;
+        }
+        return isTouchPointInView((View)getDisplayTerminalToolbarViewPager(), (int) event.getRawX(), (int) event.getRawY());
     }
 }

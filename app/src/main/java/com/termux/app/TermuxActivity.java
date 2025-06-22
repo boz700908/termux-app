@@ -266,7 +266,12 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
 
             getLorieView().screenInfo.offsetX = offsetX;
             getLorieView().screenInfo.offsetY = offsetY+ScreenUtils.getStatusHeight();
+            if(extraKeyboardHandleTouchEvent(ev)){
+                return true;
+            }
+            ev.offsetLocation(0,-ScreenUtils.getStatusHeight());
             inputControlsView.handleTouchEvent(ev);
+            ev.offsetLocation(0,ScreenUtils.getStatusHeight());
             return true;
         }
         if (ev.isFromSource(InputDevice.SOURCE_MOUSE)) {
@@ -274,7 +279,7 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
         }
 //                Log.d("sendTouchEvent",String.valueOf(inputControllerViewHandled));
         if (null != mInputHandler) {
-            if (!inputControllerViewHandled) {
+            if (!inputControllerViewHandled &&!extraKeyboardHandleTouchEvent(ev)) {
                 mInputHandler.handleTouchEvent(mMainContentView, getLorieView(), ev);
             }
         }
