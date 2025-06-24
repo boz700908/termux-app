@@ -279,7 +279,6 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
 
     public void stopDesktop() {
         if (termuxActivityListener != null) {
-            mLorieViewConnected = false;
             termuxActivityListener.stopDesktop(this);
         }
     }
@@ -572,21 +571,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
                     .show();
             }
             if (p.getKey().contentEquals("stop_desktop")) {
-                new android.app.AlertDialog.Builder(getActivity())
-                    .setTitle("Stop Desktop")
-                    .setPositiveButton("OK",
-                        (dialog, whichButton) -> {
-                            if (loriePreferences != null) {
-                                handler.postDelayed(() -> {
-                                    loriePreferences.openPreference(false);
-                                    loriePreferences.stopDesktop();
-                                }, 500);
-                            }
-                        }
-                    )
-                    .setNegativeButton("Cancel", (dialog, whichButton) -> dialog.dismiss())
-                    .create()
-                    .show();
+                loriePreferences.stopDesktop();
             }
 
 

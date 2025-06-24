@@ -65,6 +65,7 @@ chmod 400 /data/data/com.termux/files/usr/libexec/termux-x11/loader.apk
 chmod 400 /data/data/com.termux/files/usr/bin/startxserver
 chmod 400 /data/data/com.termux/files/usr/bin/stopserver
 chmod 400 /data/data/com.termux/files/usr/bin/termux-x11
+chmod 400 /data/data/com.termux/files/usr/bin/termux-display
 chmod 400 /data/data/com.termux/files/usr/bin/termux-x11-preference
 EOF
 
@@ -112,6 +113,7 @@ BUILD_DATE=$(date +%s)
     echo "    chmod 400 /data/data/com.termux/files/usr/bin/startxserver"
     echo "    chmod 400 /data/data/com.termux/files/usr/bin/stopserver"
     echo "    chmod 400 /data/data/com.termux/files/usr/bin/termux-x11"
+    echo "    chmod 400 /data/data/com.termux/files/usr/bin/termux-display"
     echo "    chmod 400 /data/data/com.termux/files/usr/bin/termux-x11-preference"
     echo "}"
 } >$DATA_DIR/.INSTALL

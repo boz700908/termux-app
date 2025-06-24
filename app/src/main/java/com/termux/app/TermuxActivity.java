@@ -1,7 +1,6 @@
 package com.termux.app;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-import static android.view.KeyEvent.ACTION_UP;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_FILES_DIR_PATH;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_HOME_DIR_PATH;
 import static com.termux.shared.termux.TermuxConstants.TERMUX_TMP_PREFIX_DIR_PATH;
@@ -265,13 +264,13 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
             int offsetY = viewLocation[1] - view0Location[1];
 
             getLorieView().screenInfo.offsetX = offsetX;
-            getLorieView().screenInfo.offsetY = offsetY+ScreenUtils.getStatusHeight();
-            if(extraKeyboardHandleTouchEvent(ev)){
+            getLorieView().screenInfo.offsetY = offsetY;
+            if (extraKeyboardHandleTouchEvent(ev)) {
                 return true;
             }
-            ev.offsetLocation(0,-ScreenUtils.getStatusHeight());
+            ev.offsetLocation(0, -ScreenUtils.getStatusHeight());
             inputControlsView.handleTouchEvent(ev);
-            ev.offsetLocation(0,ScreenUtils.getStatusHeight());
+            ev.offsetLocation(0, ScreenUtils.getStatusHeight());
             return true;
         }
         if (ev.isFromSource(InputDevice.SOURCE_MOUSE)) {
@@ -279,7 +278,7 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
         }
 //                Log.d("sendTouchEvent",String.valueOf(inputControllerViewHandled));
         if (null != mInputHandler) {
-            if (!inputControllerViewHandled &&!extraKeyboardHandleTouchEvent(ev)) {
+            if (!inputControllerViewHandled && !extraKeyboardHandleTouchEvent(ev)) {
                 mInputHandler.handleTouchEvent(mMainContentView, getLorieView(), ev);
             }
         }
@@ -430,15 +429,19 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
 
             @Override
             public void stopDesktop(Activity activity) {
-                    final AlertDialog.Builder b = new AlertDialog.Builder(TermuxActivity.this);
-                    b.setIcon(android.R.drawable.ic_dialog_alert);
-                    b.setMessage(R.string.stopDesktopTitle);
-                    b.setPositiveButton(android.R.string.yes, (dialog, id) -> {
-                        dialog.dismiss();
+                final AlertDialog.Builder b = new AlertDialog.Builder(TermuxActivity.this);
+                b.setIcon(android.R.drawable.ic_dialog_alert);
+                b.setMessage(R.string.stop_desktop_title);
+                b.setPositiveButton(android.R.string.yes, (dialog, id) -> {
+                    dialog.dismiss();
+                    handler.postDelayed(() -> {
+                        openPreference(false);
+                        mLorieViewConnected = false;
                         CommandUtils.exec(activity, "stopserver", null);
-                    });
-                    b.setNegativeButton(android.R.string.no, null);
-                    b.show();
+                    }, 500);
+                });
+                b.setNegativeButton(android.R.string.no, null);
+                b.show();
             }
 
             @Override
@@ -784,6 +787,7 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
             handler.postDelayed(() -> isExit = false, 2000);
         }
     }
+
     private void unlockOrExitApp() {
         if (isExit) {
             Intent exitIntent = new Intent(this, TermuxService.class)

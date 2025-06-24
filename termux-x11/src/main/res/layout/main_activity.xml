@@ -270,7 +270,7 @@
         android:visibility="gone" />
 
     <View
-        android:id="@+id/activity_termux_bottom_space_view"
+        android:id="@+id/display_termux_bottom_space_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="bottom|center"
