@@ -439,6 +439,7 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
                         mLorieViewConnected = false;
                         CommandUtils.exec(activity, "stopserver", null);
                     }, 500);
+                    mLorieViewConnected=false;
                 });
                 b.setNegativeButton(android.R.string.no, null);
                 b.show();

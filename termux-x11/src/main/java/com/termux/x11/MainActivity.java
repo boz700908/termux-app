@@ -904,11 +904,10 @@ public class MainActivity extends LoriePreferences {
             if (!connected) {
                 MainActivity.mLorieViewConnected = false;
                 tryConnect();
-            }
-            else {
+            } else {
                 getLorieView().setPointerIcon(PointerIcon.getSystemIcon(this, PointerIcon.TYPE_NULL));
                 openPreference(false);
-                MainActivity.mLorieViewConnected =true;
+                MainActivity.mLorieViewConnected = true;
             }
 
             onWindowFocusChanged(hasWindowFocus());
@@ -1004,6 +1003,7 @@ public class MainActivity extends LoriePreferences {
     public void showProcessManagerDialog() {
         (new TaskManagerDialog(this)).show();
     }
+
     //whether view include (x,y)
     private boolean isTouchPointInView(View view, int x, int y) {
         if (view == null) {
@@ -1022,10 +1022,11 @@ public class MainActivity extends LoriePreferences {
         }
         return false;
     }
-    protected boolean extraKeyboardHandleTouchEvent(MotionEvent event){
-        if(getDisplayTerminalToolbarViewPager().getVisibility()!=VISIBLE){
+
+    protected boolean extraKeyboardHandleTouchEvent(MotionEvent event) {
+        if (getDisplayTerminalToolbarViewPager().getVisibility() != VISIBLE) {
             return false;
         }
-        return isTouchPointInView((View)getDisplayTerminalToolbarViewPager(), (int) event.getRawX(), (int) event.getRawY());
+        return isTouchPointInView((View) getDisplayTerminalToolbarViewPager(), (int) event.getRawX(), (int) event.getRawY());
     }
 }
