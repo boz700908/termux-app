@@ -832,7 +832,7 @@ public class MainActivity extends LoriePreferences {
 
         window.setSoftInputMode(reseed ? SOFT_INPUT_ADJUST_RESIZE : SOFT_INPUT_ADJUST_PAN);
 
-        ((FrameLayout) findViewById(android.R.id.content)).getChildAt(0).setFitsSystemWindows(!fullscreen);
+//        ((FrameLayout) findViewById(android.R.id.content)).getChildAt(0).setFitsSystemWindows(!fullscreen);
         if (hasFocus) {
             getLorieView().regenerate();
             getLorieView().requestLayout();

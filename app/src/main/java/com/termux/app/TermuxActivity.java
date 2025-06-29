@@ -268,9 +268,9 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
             if (extraKeyboardHandleTouchEvent(ev)) {
                 return true;
             }
-            ev.offsetLocation(0, -ScreenUtils.getStatusHeight());
+//            ev.offsetLocation(0, -ScreenUtils.getStatusHeight());
             inputControlsView.handleTouchEvent(ev);
-            ev.offsetLocation(0, ScreenUtils.getStatusHeight());
+//            ev.offsetLocation(0, ScreenUtils.getStatusHeight());
             return true;
         }
         if (ev.isFromSource(InputDevice.SOURCE_MOUSE)) {
