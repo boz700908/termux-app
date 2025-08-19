@@ -513,7 +513,7 @@ public class TermuxActivity extends com.termux.x11.MainActivity implements Servi
                                 handler.postDelayed(() -> {
                                     mFloatBallMenuClient = new FloatBallMenuClient(TermuxActivity.this);
                                     mFloatBallMenuClient.onCreate();
-                                }, 2000);
+                                }, 100);
                             }
 
                         }
